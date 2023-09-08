@@ -1,0 +1,4 @@
+,testCase,computation duration (CPU) [s],avalanche flow time [s],volume at t0 [m3],volume at tFinal [m3],spatial resolution x [m],spatial resolution y [m],number of particles
+1,IdealizedTopo,,,,,,,
+2,RealTopo,,,,,,,
+3,CoulombOnly,,,,,,,
