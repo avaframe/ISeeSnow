@@ -13,15 +13,16 @@ So the focus is on standard simulations with prescribed friction parameters for
 two different topographies: an idealized topography and a real-world example. 
 
 We ask the participating groups to employ their default configuration with a
-Voellmy friction relation for these simulations. The friction parameters mu,
-xsi and the release thickness are set to be the same for all. As a third test
-case, a simulation run with purely Coulomb friction should be performed for 
-the idealized topography. If the respective model configuration is not designed
-to use a friction relation with only Coulomb frition, we ask the participants to 
-set the xsi value in the Voellmy friction relation to an extremely high value, 
+Voellmy friction relation for these simulations. The values of the friction parameters 
+mu, xi and the release thickness are provided alongside the topography and 
+release area input data. As a third test case, a simulation run with purely 
+Coulomb friction should be performed for the idealized topography. If the 
+respective model configuration is not designed to use a friction relation 
+with only Coulomb friction, we ask the participants to set the xi value in the 
+Voellmy friction relation to an extremely high value, 
 forcing the effect of the turbulent friction term to be negligible. 
 
-The AvaFrame-team will provide input data and parameter values for the two test
+The AvaFrame-team will provide input data and parameter values for the three test
 cases and compare the gathered simulation results. The analysis is performed
 using the functionalities of the [ana3AIMEC](https://docs.avaframe.org/en/latest/moduleAna3AIMEC.html) and
 [ana4Stats](https://docs.avaframe.org/en/latest/moduleAna4Stats.html) modules of
@@ -31,33 +32,59 @@ using the functionalities of the [ana3AIMEC](https://docs.avaframe.org/en/latest
 
 ## How to participate in ISeeSnow?
 
-There are two different options: 
+The requirement is to perform one simulation per test case (three in total)
+and provide the result datasets as described in the Section *Result datasets*.
 
-1. The minimum requirement is to perform one simulation per test case (two in total) and provide the 
-  result datasets as described below. 
+The **runISeeSnowAnalysis.py** script provides the option to test the postprocessing analysis based on
+[ana3AIMEC](https://docs.avaframe.org/en/latest/moduleAna3AIMEC.html) on your simulation results. In order to run
+this script, ensure that your simulation results (in the required format and following the prescribed naming convention
+described in the Section *Result datasets*) are located in the **data/testCase/Outputs** directories of
+the respective test case (i.e. IdealizedTopo, RealTopo, CoulombOnly). 
+ 
+The analysis results will be saved to **data/testCase/Outputs/ana3AIMEC**
+for each of the three test cases. There is also the option to provide *outputDirectoryPath* and
+*testCase* as command line arguments. If provided, the simulation result files will be fetched from the
+*outputDirectoryPath* directory (one per test case) and the required topography information from the *data/testCase/Inputs* directory,
+analysis results will also be saved to **data/testCase/Outputs/ana3AIMEC**. The aimec analysis further requires e.g. a
+[thalweg](https://docs.avaframe.org/en/latest/glossary.html#term-thalweg) (shapefile), this data
+is also provided alongside the model input data. 
 
-2. However, there is also the option to use the **runISeeSnowTest.py** script. This script offers the options to: 1) create the idealized topography and release area scenario, 2) fetch input data and provide paths to the respective files, 3) call a computational module to perform the simulations and 4) perform [ana3AIMEC](https://docs.avaframe.org/en/latest/moduleAna3AIMEC.html) analysis of the simulation results. These four steps can also be performed individually, so for example only the aimec analysis for the simulation results. The configuration of all employed modules can be found in **ISeeSnowCfgIdealizedTopo.ini**, **ISeeSnowCfgRealTopo.ini** or **ISeeSnowCfgCoulombOnly.ini**. The test case can be chosen in the very beginning of the script (line 25) and also if a call to the computational module shall be performed. It is set up to call the *comMod* specified in line 27 - exemplary for [com1DFA](https://docs.avaframe.org/en/latest/moduleCom1DFA.html)- but you are invited to include a call to your model here. Note on aimec analysis: if NO aimecDir path is provided in line 28, aimec will check for simulation results in avaName/Outputs/comMod/peakFiles - if you just want to run the aimec analysis on your simulation results - just provide the path to the results in the parameter aimecDir in line 28 of the script. The aimec analysis requires a [thalweg](https://docs.avaframe.org/en/latest/glossary.html#term-thalweg) and a splitPoint (shape files) in the inputs, these are also provided alongside the model input data. Running the **runISeeSnowTest.py** script requires an [*AvaFrame* installation](https://docs.avaframe.org/en/latest/advancedUsage.html#advanced-script-installation).
+Note that running the **runISeeSnowAnalysis.py** script requires an [*AvaFrame* advanced installation](https://docs.avaframe.org/en/latest/advancedUsage.html#advanced-script-installation).
+
+Additionally, the directory **exampleWorkflowCom1DFA** provides an example workflow to run the test
+cases - it is exemplary set up for [com1DFA](https://docs.avaframe.org/en/latest/moduleCom1DFA.html)-
+but you are invited to include a call to your model in there.
 
 In the following, information on provided model input data and required format
 of result datasets is given:
 
 ### Model input data:
 
-The input data comprises a digital elevation model (DEM) (regularly spaced points with a spatial resolution of 5 meters) and a release area scenario per test case. The release area is provided as shape file OR alternatively as release thickness field .asc file. The .asc file has the same extent and spatial resolution as the DEM and provides the actual values of release thickness at each cell (values different from zero give the release thickness, whereas areas outside of the prescribed release polygon are represented by values of 0). Note on release thickness .asc file: The .asc files in the **Inputs/RELTH** directories are created based on the DEM and the release polygon read from the corresponding shape file. In the resulting raster, cells are set to belong to the release area as soon as there is an intersection with the release polygon. For this reason, the area of the release thickness field exceeds the area of the release polygon.
+The input data comprises a digital elevation model (DEM) (regularly spaced points with a spatial resolution of 5 meters)
+and a release area scenario per test case. The release area is provided as shapefile OR alternatively as release
+thickness field .asc file. The .asc file has the same extent and spatial resolution as the DEM and provides the actual
+values of release thickness at each cell (values different from zero give the release thickness, whereas areas outside
+of the prescribed release polygon are represented by values of 0). Note on release thickness .asc file: The .asc files
+in the **Inputs** directories are created based on the DEM and the release polygon read from the corresponding shapefile.
+In the resulting raster, cells are set to belong to the release area as soon as there is an intersection with
+the release polygon. For this reason, the area of the release thickness field exceeds the area of the release polygon.
 
-* digital elevation model as .asc file (format: https://desktop.arcgis.com/en/arcmap/10.3/manage-data/raster-and-images/esri-ascii-raster-format.htm) with a spatial resolution of 5 meters
-	* testCase IdealizedTopo: **DEM_HS_Topo.asc**
-	* testCase RealTopo: **realDEM.asc**
- 	* testCase CoulombOnly: **DEM_HS_Topo.asc**
-* release area scenario as shapefile with release area feature (polygon), homogeneous release thickness througout release area
+* digital elevation model as .asc file (format:
+  https://desktop.arcgis.com/en/arcmap/10.3/manage-data/raster-and-images/esri-ascii-raster-format.htm)
+  with a spatial resolution of 5 meters
+	* testCase IdealizedTopo: **DEM_IdealizedTopo.asc**
+	* testCase RealTopo: **DEM_RealTopo.asc**
+ 	* testCase CoulombOnly: **DEM_CoulombOnly.asc**
+* release area scenario as shapefile with release area feature (polygon), homogeneous release thickness throughout release area
 	* testCase IdealizedTopo: **REL/release1HS.shp**
 	* testCase RealTopo: **REL/realWog.shp**
  	* testCase CoulombOnly: **REL/release1HS.shp**
-* release area scenario as asc file with release area feature thickness, homogeneous release thickness througout release area, covering the DEM extent and a spatial resolution of 5 meters
+* release area scenario as asc file with release area feature thickness, homogeneous release
+  thickness throughout release area, covering the DEM extent and a spatial resolution of 5 meters
 	* testCase IdealizedTopo: **RELTH/release1HSField5m.asc**
 	* testCase RealTopo: **RELTH/realWogField5m.asc**
- 	* testCase CoulombOnly: **RELTH/release1HSField5m.asc**	 
-* friction parameter text file with values for mu and xsi, as well as release
+ 	* testCase CoulombOnly: **RELTH/release1HSField5m.asc**	
+* simulation parameter text file with values for mu and xi, as well as release
   thickness value (see description of Voellmy-type friction relation for
   example here:
   https://docs.avaframe.org/en/latest/theoryCom1DFA.html#voellmy-friction-model)
@@ -73,39 +100,44 @@ The input data comprises a digital elevation model (DEM) (regularly spaced point
 #### CoulombOnly
 ![test case CoulombOnly](/images/releaseScenario_release1HS_03com1DFA_C_null_dfa.png)
 
-The corresponding files can be found in the directory **data**, where **avaIdealizedTopo** refers to the idealized test case, **avaRealTopo** represents the real-world topography and **avaCoulombOnly** provides the same topography and release area scenario as in the case of the idealizedTopo test case, but should be run with purely Coulomb friction. For all three test cases,
-the DEM (*DEM_HS_Topo.asc* and *avaWog.asc*, respectively) is located in the directory **Inputs**, the release area shapefile in **Inputs/REL** and the release area thickness field in **Inputs/RELTH**. The friction parameter
-values, can be found in *frictionParameterValues.csv*. Data source info for avaRealTopo can be found [here](https://docs.avaframe.org/en/latest/dataSources.html#data-sources).
+The corresponding files can be found in the directory **data**, where **IdealizedTopo** refers to the
+idealized test case, **RealTopo** represents the real-world topography and **CoulombOnly** provides the same
+topography and release area scenario as in the case of the idealizedTopo test case, but should be run with
+purely Coulomb friction. For all three test cases, the DEM (*DEM_IdealizedTopo.asc*, *DEM_RealTopo.asc* and
+*DEM_CoulombOnly*, respectively), the release area shapefile and the release area thickness field are located
+in the directory **Inputs**. The friction parameter values and the release thickness value, can be found
+in the corresponding *simulationParameterValues_testCase.csv* files. Data source info for the RealTopo test
+case can be found [here](https://docs.avaframe.org/en/latest/dataSources.html#data-sources). The idealized
+topographies have been generated using the [in3Utils](https://docs.avaframe.org/en/latest/moduleIn3Utils.html)
+module. This topography generation is also included in the *exampleWorkflowCom1DFA/runISeeSnowTest.py* script.
 
 ### Result datasets: 
 
 We ask all the participating groups to perform a simulation for the two test
 cases, and to provide the following result datasets: 
 
-* fields of peak flow velocity and peak flow thickness .asc file covering the
-  entire computational domain (DEM extent), where peak refers to the maximum
+* fields of peak flow velocity and peak flow thickness as .asc file covering the
+  entire computational domain (DEM extent). *Peak* refers to the maximum
   flow variable value over the entire duration of the simulation. The peak
   fields should have a spatial resolution of 5 meters and the same extent of
   the DEM - hence the .asc files should have the same header as the provided
   dem file. We require a specific naming of the peak field .asc files:
-  *releaseAreaScenario_simulationID_simType_modelType_resltType.asc*, from now on
+  *releaseName_simulationID_simType_modelType_resultType.asc*, from now on
   referred to *A_B_C_D_E.asc*, where:
-  	- A - *releaseAreaScenario*: refers to the name of the release shape file
-	- B - *simType*: refers to null (no entrainment, no resistance)
-	- C - *simulationID*: needs to be unique for the respective simulation and include the test case (01 for idealizedTopo, 02 for realTopo and 03 for coulombOnly) and name of your model, so e.g. 01com1DFA, 02com1DFA and 03com1DFA
-	- D - *modelType*: can be any descriptive string of the employed model (here dfa for dense flow avalanche)
+  	- A - *releaseName*: refers to the name of the release shapefile
+	- B - *simulationID*: needs to be unique for each simulation - use: 01IdealizedTopo, 02RealTopo and 03CoulombOnly
+  	- C - *simType*: use *null*
+	- D - *modelType*: name of your model - NOT allowed to include underscores
 	- E - *result type*: is pft (peak flow thickness) and pfv (peak flow velocity)
-  Basically, items A, B, C and E need to be set according to the test cases, where for D
-  you can set any name.
 
   Note: underscores are not allowed except to separate the
-  four elements of the file name and no data values should be provided as nans.
-* a csv file with information on simulation duration, computational time, total
+  five elements of the file name and no data values should be provided as nans.
+* a csv file with information on computation duration (CPU), avalanche flow time, total
   volume at initial time step and also final time step, spatial resolution
-  (example: *simulationResultTable.csv*) - one file listing the valus of all simulations
+  (example: *simulationResultTable.csv*) - one file listing the values of all simulations
 * a text file with information on model configuration, i.e. parameter values,
-  numerical configuration, model version etc. Naming should be consistent with
-  the peak field files: *releaseAreaScenario_simulationID_simType_modelType.txt*.
+  numerical configuration, model version etc., the naming should be consistent with
+  the peak field files: *releaseName_simulationID_simType_modelType.txt*.
   These configuration files can optionally be also provided as [.ini files](https://docs.python.org/3/library/configparser.html#supported-ini-file-structure),
   to be interpreted by [configparser](https://docs.python.org/3/library/configparser.html#module-configparser). 
 
@@ -116,37 +148,32 @@ can be performed using your default numerical setup (also if using a different
 spatial resolution), but they need to be submitted as rasters with a cell size
 of 5 meters.
 
-All the listed result files should be provided as a .tar/.zip file containing
+All the listed result files should be provided as archive file (zip, tar.gz, etc.) containing
 the simulationResultTable with one line per simulation, and 
-one subdirectory per avalanche test case: **avaIdealizedTopo**,
-**avaRealTopo** and **avaCoulombOnly** each of them providing the respective peak fields of flow
+one subdirectory per avalanche test case: **IdealizedTopo**,
+**RealTopo** and **CoulombOnly** each of them providing the respective peak fields of flow
 velocity and flow thickness and the model configuration file. 
 
-All the csv files are setup so that they can directly be converted to a [pandas
-DataFrame](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html),
-which is helpful for further postprocessing.
-
-In addition, we ask the participating groups to already provide a paragraph
+In addition, we ask the participating groups to provide a paragraph
 describing their simulation tool, e.g. mathematical model, numerical methods,
 configuration, code availability and a reference. This should be added as a
-simple .txt file in the .tar/.zip archive together with the result datasets. 
+simple .txt file in the archive file together with the result datasets. 
 
-An example of all the required result files can be found in the directory 
-**exampleOutputs**.
-
+Once you have prepared the required result datasets, you can send the archive file
+to us via email. In case the file size is too big, contact us and we will 
+inform you on how to submit the data. With the submission you agree to the publication
+of the results in full. The deadline for submission is on November 30th. 
 
 ## Provide your own test case
 
 We invite you to provide further even test cases that can be used in a potential
 continuation or future intercomparison projects. We will collect these and publish
-them as an open dataset (properly attributed, citeable), hopefully building a test
+them as an open dataset (properly attributed, citable), hopefully building a test
 dataset that benefits the whole community. 
-The miminum requirements for an event test case is: 
+The minimum requirements for an event test case are: 
 
 * release area scenario
 * release thickness 
 * documented runout line
 
   
-
-
