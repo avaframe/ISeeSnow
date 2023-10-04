@@ -121,7 +121,8 @@ cases, and to provide the following result datasets:
   flow variable value over the entire duration of the simulation. The peak
   fields should have a spatial resolution of 5 meters and the same extent of
   the DEM - hence the .asc files should have the same header as the provided
-  dem file. We require a specific naming of the peak field .asc files:
+  dem file (if there is an issue to provide the results in this format, contact us).
+  We require a specific naming of the peak field .asc files:
   *releaseName_simulationID_simType_modelType_resultType.asc*, from now on
   referred to *A_B_C_D_E.asc*, where:
   	- A - *releaseName*: refers to the name of the release shapefile
