@@ -89,6 +89,8 @@ the release polygon. For this reason, the area of the release thickness field ex
   example here:
   https://docs.avaframe.org/en/latest/theoryCom1DFA.html#voellmy-friction-model)
 
+**Note**: The release thickness is measured normal to the surface.
+
 #### IdealizedTopo
 ![test case IdealizedTopo](/images/releaseScenario_release1HS_01com1DFA_C_null_dfa.png)
 
@@ -116,7 +118,8 @@ module. This topography generation is also included in the *exampleWorkflowCom1D
 We ask all the participating groups to perform a simulation for the two test
 cases, and to provide the following result datasets: 
 
-* fields of peak flow velocity and peak flow thickness as .asc file covering the
+* fields of peak flow velocity and peak flow thickness (measured normal to the surface)
+  as .asc file covering the
   entire computational domain (DEM extent). *Peak* refers to the maximum
   flow variable value over the entire duration of the simulation. The peak
   fields should have a spatial resolution of 5 meters and the same extent of
